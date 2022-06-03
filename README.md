@@ -6,7 +6,6 @@ This Repo contains all currently (June 2022) available UNDP Job Postings ranging
 
 
 ```python
-import glob, os, sys; sys.path.append('../src')
 import pandas as pd
 ```
 
