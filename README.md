@@ -19,7 +19,6 @@ df = pd.read_parquet("data/undp_jobs_processed.parquet")
 df.head(20)
 ```
 
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
