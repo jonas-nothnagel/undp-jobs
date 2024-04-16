@@ -1,3 +1,7 @@
+# Data Scraper should be rewritten to be one function that opens the UNDP job homepage, checks with last ID in database, continues from this ID and increases page number until no response is given.
+
+
+
 #%%
 from bs4 import BeautifulSoup
 import requests
@@ -9,7 +13,7 @@ sys.setrecursionlimit(100000)
 #%%
 url = 'https://jobs.undp.org/cj_view_job.cfm?cur_job_id='
 #Generate list of decreasing numbers to artificially generate the URLS:
-numbers = list(range(111860, 1150, -1))
+numbers = list(range(115936, 1150, -1))
 numbers_df = pd.DataFrame(numbers, columns = ['numbers'])
 numbers_df['numbers'] = numbers_df['numbers'].astype(str)
 #Append numbers to url
@@ -37,7 +41,7 @@ def get_content(url):
 d = {}
 for i, r in enumerate(tqdm(url)):
     if i%20000 == 0:
-        with open('undp_jobs.csv', 'w') as f:  # You will need 'wb' mode in Python 2.x
+        with open('undp_jobs.csv', 'w') as f: 
             w = csv.DictWriter(f, d.keys())
             w.writeheader()
             w.writerow(d)
