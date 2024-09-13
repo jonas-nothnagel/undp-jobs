@@ -9,7 +9,7 @@ sys.setrecursionlimit(100000)
 #%%
 url = 'https://jobs.undp.org/cj_view_job.cfm?cur_job_id='
 #Generate list of decreasing numbers to artificially generate the URLS:
-numbers = list(range(111860, 1150, -1)) # latest job Apr 24: 115936
+numbers = list(range(112007, 1150, -1)) # latest job Apr 24: 115936
 numbers_df = pd.DataFrame(numbers, columns = ['numbers'])
 numbers_df['numbers'] = numbers_df['numbers'].astype(str)
 #Append numbers to url
