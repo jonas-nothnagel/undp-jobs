@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 BASE_URL = 'https://jobs.undp.org/cj_view_job.cfm?cur_job_id='
 CHECKPOINT_FILE = 'checkpoint.txt'
 OUTPUT_FILE = 'undp_jobs.csv'
-MIN_JOB_ID = 112000
+MIN_JOB_ID = 1150
 MAX_RETRIES = 3
 RETRY_DELAY = 5
 
@@ -63,20 +63,20 @@ def is_valid_job_posting(url):
     except requests.RequestException:
         return False
 
-def find_max_job_id(start_id=MIN_JOB_ID):
+def find_max_job_id(start_id=MIN_JOB_ID, threshold=100000):
     current_id = start_id
     with tqdm(desc="Finding max job ID", unit="job") as pbar:
         while True:
             url = f"{BASE_URL}{current_id}"
-            if is_valid_job_posting(url):
+            if current_id < threshold or is_valid_job_posting(url):
                 current_id += 1
                 pbar.update(1)
-                print(url)
             else:
                 break
     
     max_id = current_id - 1  # Subtract 1 to get the last valid ID
     logging.info(f"Max job ID found: {max_id}")
+    print("Max job ID:" max_id)
     return max_id
 
 def scrape_jobs():
