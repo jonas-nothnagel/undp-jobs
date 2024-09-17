@@ -462,3 +462,4 @@ There are currently around 120000 job postings online which will result in a mul
 - Write analytic scripts.
 - Serve analytic insights and data to Streamlit.
 
+
