@@ -1,6 +1,6 @@
 # UNDP Job Postings
 
-This Repo contains all currently (June 2022) available UNDP Job Postings ranging from 2004 to 2022. The Repository entails the script for scraping and storing the raw job postings from UNDP's server as well as a script for preprocessing the data. Analysis and Dashboarding is planned.
+This Repo contains all currently (October 2024) available UNDP Job Postings ranging from 2004 to 2024. The Repository entails the script for scraping and storing the raw job postings from UNDP's server as well as a script for preprocessing the data. Analysis and Dashboarding is planned.
 
 Cleaning scripts are combined with amazing open sourc work from https://github.com/alinacherkas
 # Data after processing
