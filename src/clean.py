@@ -11,45 +11,107 @@ import en_core_web_sm
 import wordninja
 
 # standard library
-import re, json, hashlib
+import re, json, hashlib, unicodedata
 from typing import Set, Tuple, List, Dict, Iterable, Callable, Union
 
 # utils
 from langdetect import detect
 
-'''basic cleaning - suitable for transformer models'''
+import re
+import unicodedata
+
+import re
+import unicodedata
+
 def basic(s):
     """
+    Perform basic cleaning of raw text while preserving numbers and hyphens.
+    
     :param s: string to be processed
-    :return: processed string: see comments in the source code for more info
+    :return: processed string
     """
-    # Text Lowercase
-    s = s.lower() 
-    # Remove punctuation
+    # Convert to lowercase
+    s = s.lower()
+    
+    # Normalize unicode characters
+    s = unicodedata.normalize('NFKD', s).encode('ASCII', 'ignore').decode('ASCII')
+    
+    # Replace escaped characters
     s = re.sub(r'\\n', ' ', s) 
     s = re.sub(r'\\r', ' ', s) 
     s = re.sub(r'\\xa0', ' ', s) 
-    s = re.sub(r'\n', ' ', s) 
+    
     translator = str.maketrans(' ', ' ', string.punctuation) 
     s = s.translate(translator)
+
+    # Replace various types of actual whitespace with a single space
+    s = re.sub(r'[\s\xa0\r\n]+', ' ', s)
+    
     # Remove URLs
-    s = re.sub(r'^https?:\/\/.*[\\r\\n]*', ' ', s, flags=re.MULTILINE)
-    s = re.sub(r"http\S+", " ", s)
-    # Remove new line characters
+    s = re.sub(r'https?://\S+|www\.\S+', ' ', s)
+    
+    # Remove email addresses
+    s = re.sub(r'\S+@\S+', ' ', s)
+    
+    # Remove the word "home" on its first appearance only
+    s = re.sub(r'\bhome\b', '', s, count=1)
+    s = re.sub(r'\"', '', s)
+    s = re.sub(r'\[', '', s)
+    s = re.sub(r'\]', '', s)
+    s = re.sub(r'\'', '', s)
 
-    # Remove distracting single quotes
-    s = re.sub(r"\'", " ", s) 
-    # Remove all remaining numbers and non alphanumeric characters
-    s = re.sub(r'\d+', ' ', s) 
-    s = re.sub(r'\W+', ' ', s)
+    # Remove extra spaces
+    s = re.sub(r'\s+', ' ', s).strip()
 
-
-    # define custom words to replace: 
-    s = re.sub('content','',s,1)
-    s = re.sub('checks background','',s,1)
-    #s = re.sub(r'strengthenedstakeholder', 'strengthened stakeholder', s)
+    # Remove the specific block of text
+    specific_text = (
+        "undp is committed to achieving workforce diversity in terms of gender "
+        "nationality and culture individuals from minority groups indigenous groups "
+        "and persons with disabilities are equally encouraged to apply all applications "
+        "will be treated with the strictest confidence undp does not tolerate sexual "
+        "exploitation and abuse any kind of harassment including sexual harassment "
+        "and discrimination all selected candidates will therefore undergo rigorous "
+        "reference and background checks"
+    )
+    s = re.sub(re.escape(specific_text), '', s)
     
     return s.strip()
+
+# def basic(s):
+#     """
+#     :param s: string to be processed
+#     :return: processed string: see comments in the source code for more info
+#     """
+#     # define custom words/tokens to replace: 
+#     s = re.sub('-',' ',s)
+#     # Text Lowercase
+#     s = s.lower() 
+#     # Remove punctuation
+#     s = re.sub(r'\\n', ' ', s) 
+#     s = re.sub(r'\\r', ' ', s) 
+#     s = re.sub(r'\\xa0', ' ', s) 
+#     s = re.sub(r'\n', ' ', s) 
+#     translator = str.maketrans(' ', ' ', string.punctuation) 
+#     s = s.translate(translator)
+#     # Remove URLs
+#     s = re.sub(r'^https?:\/\/.*[\\r\\n]*', ' ', s, flags=re.MULTILINE)
+#     s = re.sub(r"http\S+", " ", s)
+
+#     # # Remove distracting single quotes
+#     # s = re.sub(r"\'", " ", s) 
+#     # Remove all remaining numbers and non alphanumeric characters
+#     #s = re.sub(r'\d+', ' ', s) 
+#     s = re.sub(r'\W+', ' ', s)
+
+#     # Remove the word "home" on its first appearance only
+#     s = re.sub(r'\bhome\b', '', s, count=1)
+
+#     # define custom words to replace: 
+#     # s = re.sub('content','',s,1)
+#     # s = re.sub('checks background','',s,1)
+#     #s = re.sub(r'strengthenedstakeholder', 'strengthened stakeholder', s)
+    
+#     return s.strip()
 
 '''processing with spacy - suitable for models such as tf-idf, word2vec'''
 def spacy_clean(alpha:str, use_nlp:bool = True) -> str:
