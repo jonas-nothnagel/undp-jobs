@@ -225,6 +225,7 @@ def clean_location(text: str, mapping: Dict[str, str]) -> str:
     if not isinstance(text, str):
         location = 'Unspecified'
 
+    # we prioritise home based over the country since it has a great contractual implication
     elif re.search('remote|home|virtual', text):
         location = 'Home-based'
 
